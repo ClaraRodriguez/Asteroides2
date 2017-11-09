@@ -18,6 +18,8 @@ public class MiAdaptador extends RecyclerView.Adapter<MiAdaptador.ViewHolder> {
     private LayoutInflater inflador;
     private Vector<String> lista;
 
+    protected View.OnClickListener onClickListener;
+
     public MiAdaptador(Context context, Vector<String> lista){
         this.lista = lista;
         inflador = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -26,6 +28,7 @@ public class MiAdaptador extends RecyclerView.Adapter<MiAdaptador.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View v = inflador.inflate(R.layout.elemento_lista, parent, false);
+        v.setOnClickListener(onClickListener);
         return new ViewHolder(v);
     }
 
@@ -50,15 +53,19 @@ public class MiAdaptador extends RecyclerView.Adapter<MiAdaptador.ViewHolder> {
         return lista.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView titulo, subtitulo;
         public ImageView icon;
 
-        ViewHolder(View itemView){
+        ViewHolder(View itemView) {
             super(itemView);
             titulo = (TextView) itemView.findViewById(R.id.titulo);
             subtitulo = (TextView) itemView.findViewById(R.id.subtitulo);
             icon = (ImageView) itemView.findViewById(R.id.icono);
         }
+    }
+
+    public void setOnItemClickListener(View.OnClickListener onClickListener){
+        this.onClickListener = onClickListener;
     }
 }

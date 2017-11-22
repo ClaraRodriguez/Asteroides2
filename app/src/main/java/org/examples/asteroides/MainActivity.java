@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mostrarPreferencias(view);
+                //mostrarPreferencias(view);
+                lanzarJuego(view);
             }
         });
 
@@ -101,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarPuntuaciones(View view){
         Intent i = new Intent(this, Puntuaciones.class);
+        startActivity(i);
+    }
+
+    public void lanzarJuego(View view){
+        Intent i = new Intent(this, Juego.class);
         startActivity(i);
     }
 }

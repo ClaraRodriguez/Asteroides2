@@ -35,7 +35,7 @@ public class MiAdaptador extends RecyclerView.Adapter<MiAdaptador.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int i){
         holder.titulo.setText(lista.get(i));
-        switch(Math.round((float)Math.random()/3)){
+        switch(Math.round((float)Math.random()*3)){
             case 0:
                 holder.icon.setImageResource(R.drawable.asteroide1);
                 break;

@@ -16,6 +16,7 @@
         android:textSize="30dp"
         android:text="@string/tituloAplicacion"
         android:padding="15dp"
+        android:id="@+id/txtTitulo"
         />
 
     <Button

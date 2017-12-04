@@ -11,7 +11,7 @@
         android:key="graficos"
         android:title="Tipo de gráficos"
         android:summary="Se escoge la representación de gráficos"
-        android:entries="@array/tiposGraficosValores"
+        android:entries="@array/tiposGraficos"
         android:entryValues="@array/tiposGraficosValores"
         android:defaultValue="1"/>
     <EditTextPreference

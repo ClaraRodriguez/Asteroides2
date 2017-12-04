@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
     private Button btnAcercaDe;
     private Button btnSalir;
     private Button btnConfig;
+
+    private TextView titulo;
+    Animation animacion;
 
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
     @Override
@@ -29,6 +35,21 @@ public class MainActivity extends AppCompatActivity {
         btnSalir = (Button) findViewById(R.id.btnsalir);
         btnConfig = (Button) findViewById(R.id.btnconfig);
 
+        titulo = (TextView) findViewById(R.id.txtTitulo);
+
+        animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
+        titulo.startAnimation(animacion);
+        Animation animacionJugar = AnimationUtils.loadAnimation(this, R.anim.aparecer);
+        btnJugar.startAnimation(animacionJugar);
+        Animation animacionConfig = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_derecha);
+        btnConfig.startAnimation(animacionConfig);
+        Animation animacionAdercaDe = AnimationUtils.loadAnimation(this, R.anim.zoom_desplazamiento);
+        btnAcercaDe.startAnimation(animacionAdercaDe);
+        Animation animacionPuntuaciones = AnimationUtils.loadAnimation(this, R.anim.giro_aparecer);
+        btnSalir.startAnimation(animacionPuntuaciones);
+
+
+
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         btnAcercaDe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnAcercaDe.startAnimation(animacion);
                 lanzarAcercaDe(null);
             }
         });

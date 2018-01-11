@@ -9,15 +9,23 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
+import android.graphics.drawable.shapes.RectShape;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.List;
 import java.util.Vector;
 
-public class VistaJuego extends View {
+public class VistaJuego extends View implements SensorEventListener {
     //ASTEROIDES//
     private Vector<Grafico> asteroides;
     private int numAsteroides = 5;
@@ -30,6 +38,18 @@ public class VistaJuego extends View {
     //Incremento estándar de giro y aceleración
     private static final int PASO_GIRO_NAVE = 5;
     private static final float PASO_ACELERACION_NAVE = 0.5f;
+
+    private float mX = 0, mY = 0;
+    private boolean disparo = false;
+
+    private boolean hayValorInicial = false;
+    private float valorInicial;
+
+    /////MISIL/////
+    private Grafico misil;
+    private static int PASO_VELOCIDAD_MISIL = 12;
+    private boolean misilActivo = false;
+    private int tiempoMisil;
 
     //THREAD Y TIEMPO
     //Thread encargado de procesar el juego
@@ -78,11 +98,20 @@ public class VistaJuego extends View {
             dNave.setIntrinsicHeight(15);
             dNave.setIntrinsicWidth(20);
             drawableNave = dNave;
+            //misil
+            ShapeDrawable dMisil = new ShapeDrawable(new RectShape());
+            dMisil.getPaint().setColor(Color.WHITE);
+            dMisil.getPaint().setStyle(Paint.Style.STROKE);
+            dMisil.setIntrinsicWidth(15);
+            dMisil.setIntrinsicHeight(3);
+            drawableMisil = dMisil;
         } else{
             drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
             //nave
             drawableNave = context.getResources().getDrawable(R.drawable.nave);
+            //misil
+            drawableMisil = context.getResources().getDrawable(R.drawable.misil1);
         }
 
         nave = new Grafico(this, drawableNave);
@@ -94,6 +123,15 @@ public class VistaJuego extends View {
             asteroide.setAngulo((int) (Math.random() * 360));
             asteroide.setRotacion((int) (Math.random() * 8 - 4));
             asteroides.add(asteroide);
+        }
+
+        misil = new Grafico(this, drawableMisil);
+
+        SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        List<Sensor> listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+        if(!listSensors.isEmpty()){
+            Sensor orientationSensor = listSensors.get(0);
+            mSensorManager.registerListener(this, orientationSensor, SensorManager.SENSOR_DELAY_GAME);
         }
     }
 
@@ -120,6 +158,9 @@ public class VistaJuego extends View {
             asteroide.dibujarGrafico(canvas);
         }
         nave.dibujarGrafico(canvas);
+        if (misilActivo){
+            misil.dibujarGrafico(canvas);
+        }
     }
 
     protected synchronized void actualizaFisica(){
@@ -144,7 +185,110 @@ public class VistaJuego extends View {
         for(Grafico asteroide : asteroides){
             asteroide.incrementarPos(factorMov);
         }
+        //Actualizamos posición de misil
+        if (misilActivo){
+            misil.incrementarPos(factorMov);
+            tiempoMisil-= factorMov;
+            if(tiempoMisil < 0){
+                misilActivo = false;
+            } else{
+                for (int i = 0; i < asteroides.size(); i++){
+                    if(misil.verificarColision(asteroides.elementAt(i))){
+                        destruyeAsteroide(i);
+                        break;
+                    }
+                }
+            }
+        }
     }
+
+    @Override
+    public boolean onKeyDown(int codigoTecla, KeyEvent evento){
+        super.onKeyDown(codigoTecla, evento);
+        boolean procesada = true;
+        switch (codigoTecla) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                aceleracionNave = +PASO_ACELERACION_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                giroNave = -PASO_GIRO_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                giroNave = +PASO_GIRO_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+            case KeyEvent.KEYCODE_ENTER:
+                activaMisil();
+                break;
+            default:
+                procesada = false;
+                break;
+        }
+        return procesada;
+    }
+
+    @Override
+    public boolean onTouchEvent (MotionEvent event){
+        super.onTouchEvent(event);
+        float x = event.getX();
+        float y = event.getY();
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                disparo = true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = Math.abs(x - mX);
+                float dy = Math.abs(y - mY);
+                if (dy < 6 && dx > 6){
+                    giroNave = Math.round((x - mX) / 2);
+                    disparo = false;
+            } else if (dx < 6 && dy > 6){
+                    aceleracionNave = Math.round((mY - y) / 25);
+                    disparo = false;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                giroNave = 0;
+                aceleracionNave = 0;
+                if (disparo){
+                    //activaMisil();
+                }
+                break;
+        }
+        mX = x;
+        mY = y;
+        return true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float valor = event.values[1];
+        if(!hayValorInicial){
+            valorInicial = valor;
+            hayValorInicial = true;
+        }
+        giroNave = (int) (valor - valorInicial)/3;
+    }
+
+    private void destruyeAsteroide(int i){
+        asteroides.remove(i);
+        misilActivo = false;
+        this.postInvalidate();
+    }
+
+    private void activaMisil(){
+        misil.setCenX(nave.getCenX());
+        misil.setCenY(nave.getCenY());
+        misil.setAngulo(nave.getAngulo());
+        misil.setIncX(Math.cos(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
+        misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
+        tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
+        misilActivo = true;
+    }
+
     class ThreadJuego extends Thread{
         @Override
         public void run(){

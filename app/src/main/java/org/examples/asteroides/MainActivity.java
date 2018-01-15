@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
+
         btnJugar = (Button) findViewById(R.id.btnjugar);
         btnAcercaDe = (Button) findViewById(R.id.btnacerca);
         btnSalir = (Button) findViewById(R.id.btnsalir);
@@ -130,5 +132,41 @@ public class MainActivity extends AppCompatActivity {
     public void lanzarJuego(View view){
         Intent i = new Intent(this, Juego.class);
         startActivity(i);
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onPause(){
+        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop(){
+        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy(){
+        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
+        super.onDestroy();
     }
 }

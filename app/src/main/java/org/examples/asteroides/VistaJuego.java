@@ -47,9 +47,11 @@ public class VistaJuego extends View implements SensorEventListener {
 
     /////MISIL/////
     private Grafico misil;
+    private Vector<Grafico> misiles;
     private static int PASO_VELOCIDAD_MISIL = 12;
     private boolean misilActivo = false;
     private int tiempoMisil;
+    private Vector<Integer> tiempoMisiles;
 
     //THREAD Y TIEMPO
     //Thread encargado de procesar el juego
@@ -152,10 +154,12 @@ public class VistaJuego extends View implements SensorEventListener {
     }
 
     @Override
-    protected synchronized void onDraw(Canvas canvas){
+    protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        for(Grafico asteroide : asteroides){
-            asteroide.dibujarGrafico(canvas);
+        synchronized (asteroides) {
+            for (Grafico asteroide : asteroides) {
+                asteroide.dibujarGrafico(canvas);
+            }
         }
         nave.dibujarGrafico(canvas);
         if (misilActivo){
@@ -251,7 +255,7 @@ public class VistaJuego extends View implements SensorEventListener {
                 giroNave = 0;
                 aceleracionNave = 0;
                 if (disparo){
-                    //activaMisil();
+                    activaMisil();
                 }
                 break;
         }
@@ -274,8 +278,10 @@ public class VistaJuego extends View implements SensorEventListener {
     }
 
     private void destruyeAsteroide(int i){
-        asteroides.remove(i);
-        misilActivo = false;
+        synchronized (asteroides){
+            asteroides.remove(i);
+            misilActivo = false;
+        }
         this.postInvalidate();
     }
 
@@ -290,12 +296,41 @@ public class VistaJuego extends View implements SensorEventListener {
     }
 
     class ThreadJuego extends Thread{
+        private boolean pausa, corriendo;
+
+        public synchronized void pausar(){
+            pausa = true;
+        }
+
+        public synchronized void reanudar(){
+            pausa = false;
+            notify();
+        }
+
+        public void detener(){
+            corriendo = false;
+            if (pausa) reanudar();
+        }
+
         @Override
         public void run(){
-            while(true){
+            corriendo = true;
+            while(corriendo){
                 actualizaFisica();
+                synchronized (this){
+                    while(pausa){
+                        try{
+                            wait();
+                        } catch(Exception e){
+                        }
+                    }
+                }
             }
         }
+    }
+
+    public ThreadJuego getThread(){
+        return thread;
     }
 }
 

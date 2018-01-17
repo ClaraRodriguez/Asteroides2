@@ -19,17 +19,38 @@ public class Juego extends Activity {
     protected void onResume(){
         super.onResume();
         vistaJuego.getThread().reanudar();
+        vistaJuego.activarSensores(this);
     }
 
     @Override
     protected void onPause(){
         vistaJuego.getThread().pausar();
+        vistaJuego.desactivarSensores(this);
         super.onPause();
     }
 
     @Override
     protected void onDestroy(){
         vistaJuego.getThread().detener();
+        vistaJuego.desactivarSensores(this);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onRestart(){
+        vistaJuego.activarSensores(this);
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop(){
+        vistaJuego.desactivarSensores(this);
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart(){
+        vistaJuego.activarSensores(this);
+        super.onStart();
     }
 }

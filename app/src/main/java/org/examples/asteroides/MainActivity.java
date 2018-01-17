@@ -2,6 +2,7 @@ package org.examples.asteroides;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView titulo;
     Animation animacion;
+
+    MediaPlayer mp;
 
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
     @Override
@@ -50,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         Animation animacionPuntuaciones = AnimationUtils.loadAnimation(this, R.anim.giro_aparecer);
         btnSalir.startAnimation(animacionPuntuaciones);
 
-
+        mp = MediaPlayer.create(this, R.raw.audio);
+        //mp.start();
 
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,38 +139,63 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle estadoGuardado){
+        super.onSaveInstanceState(estadoGuardado);
+        if (mp != null){
+            int pos = mp.getCurrentPosition();
+            estadoGuardado.putInt("posicion", pos);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle estadoGuardado){
+        super.onRestoreInstanceState(estadoGuardado);
+        if (estadoGuardado != null && mp != null){
+            int pos = estadoGuardado.getInt("posicion");
+            mp.seekTo(pos);
+        }
+    }
+
+    @Override
     protected void onStart(){
         super.onStart();
+        mp.start();
         Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
+        mp.start();
         Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onPause(){
         Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+        mp.pause();
+        //mp.start();
         super.onPause();
     }
 
     @Override
     protected void onStop(){
         Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+        mp.pause();
         super.onStop();
     }
 
     @Override
     protected void onRestart(){
         super.onRestart();
+        mp.start();
         Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy(){
         Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
+        mp.pause();
         super.onDestroy();
     }
 }

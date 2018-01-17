@@ -61,6 +61,8 @@ public class VistaJuego extends View implements SensorEventListener {
     //Cuándo se realozó el último proceso
     private long ultimoProceso = 0;
 
+    SensorManager mSensorManager;
+
     public VistaJuego(Context context, AttributeSet attrs){
         super(context, attrs);
         Drawable drawableNave, drawableAsteroide, drawableMisil;
@@ -129,12 +131,7 @@ public class VistaJuego extends View implements SensorEventListener {
 
         misil = new Grafico(this, drawableMisil);
 
-        SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
-        if(!listSensors.isEmpty()){
-            Sensor orientationSensor = listSensors.get(0);
-            mSensorManager.registerListener(this, orientationSensor, SensorManager.SENSOR_DELAY_GAME);
-        }
+
     }
 
     @Override
@@ -293,6 +290,24 @@ public class VistaJuego extends View implements SensorEventListener {
         misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
         tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
         misilActivo = true;
+    }
+
+    public void activarSensores(Context context){
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        List<Sensor> listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+        if(!listSensors.isEmpty()){
+            Sensor orientationSensor = listSensors.get(0);
+            mSensorManager.registerListener(this, orientationSensor, SensorManager.SENSOR_DELAY_GAME);
+        }
+
+    }
+
+    public void desactivarSensores(Context context){
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        List<Sensor> listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+        if(listSensors.isEmpty()){
+            mSensorManager.unregisterListener(this);
+        }
     }
 
     class ThreadJuego extends Thread{

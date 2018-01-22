@@ -14,6 +14,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -62,6 +65,10 @@ public class VistaJuego extends View implements SensorEventListener {
     private long ultimoProceso = 0;
 
     SensorManager mSensorManager;
+
+    /////MULTIMEDIA/////
+    SoundPool soundPool;
+    int idDisparo, idExplosion;
 
     public VistaJuego(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -131,6 +138,9 @@ public class VistaJuego extends View implements SensorEventListener {
 
         misil = new Grafico(this, drawableMisil);
 
+        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        idDisparo = soundPool.load(context, R.raw.disparo, 0);
+        idExplosion = soundPool.load(context, R.raw.explosion, 0);
 
     }
 
@@ -280,6 +290,7 @@ public class VistaJuego extends View implements SensorEventListener {
             misilActivo = false;
         }
         this.postInvalidate();
+        soundPool.play(idExplosion, 1, 1, 0, 0, 1);
     }
 
     private void activaMisil(){
@@ -290,6 +301,7 @@ public class VistaJuego extends View implements SensorEventListener {
         misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
         tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
         misilActivo = true;
+        soundPool.play(idDisparo, 1, 1, 1, 0, 1);
     }
 
     public void activarSensores(Context context){

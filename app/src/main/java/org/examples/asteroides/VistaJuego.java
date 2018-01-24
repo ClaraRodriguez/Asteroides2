@@ -65,6 +65,7 @@ public class VistaJuego extends View implements SensorEventListener {
     private long ultimoProceso = 0;
 
     SensorManager mSensorManager;
+    List<Sensor> listSensors;
 
     /////MULTIMEDIA/////
     SoundPool soundPool;
@@ -138,11 +139,20 @@ public class VistaJuego extends View implements SensorEventListener {
 
         misil = new Grafico(this, drawableMisil);
 
-        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        idDisparo = soundPool.load(context, R.raw.disparo, 0);
-        idExplosion = soundPool.load(context, R.raw.explosion, 0);
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+
+        if(pref.getBoolean("musica", true) == true){
+            soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        }
+
+        if(pref.getBoolean("sonido", true) == true){
+            idDisparo = soundPool.load(context, R.raw.disparo, 0);
+            idExplosion = soundPool.load(context, R.raw.explosion, 0);
+        }
 
     }
+
 
     @Override
     protected void onSizeChanged(int ancho, int alto, int ancho_anterior, int alto_anterior){
@@ -301,12 +311,11 @@ public class VistaJuego extends View implements SensorEventListener {
         misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
         tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
         misilActivo = true;
+
         soundPool.play(idDisparo, 1, 1, 1, 0, 1);
     }
 
     public void activarSensores(Context context){
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
         if(!listSensors.isEmpty()){
             Sensor orientationSensor = listSensors.get(0);
             mSensorManager.registerListener(this, orientationSensor, SensorManager.SENSOR_DELAY_GAME);
@@ -315,8 +324,6 @@ public class VistaJuego extends View implements SensorEventListener {
     }
 
     public void desactivarSensores(Context context){
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> listSensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
         if(listSensors.isEmpty()){
             mSensorManager.unregisterListener(this);
         }

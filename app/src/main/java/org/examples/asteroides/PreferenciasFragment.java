@@ -1,5 +1,6 @@
 package org.examples.asteroides;
 
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -15,6 +16,8 @@ public class PreferenciasFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferencias);
 
         final EditTextPreference fragmentos = (EditTextPreference)findPreference("fragmentos");
+        final CheckBoxPreference musica = (CheckBoxPreference) findPreference("musica");
+        final CheckBoxPreference sonido = (CheckBoxPreference) findPreference("sonido");
 
         fragmentos.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
             @Override
@@ -35,5 +38,43 @@ public class PreferenciasFragment extends PreferenceFragment {
                 }
             }
         });
+
+        /*musica.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue){
+                boolean valor;
+                try{
+                    valor = (boolean) newValue;
+                } catch(Exception e){
+                    Toast.makeText(getActivity(), "Error con la música", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if(valor){
+                    musica.setSummary("La música está activada.");
+                    return true;
+                } else{
+                    return false;
+                }
+            }
+        });
+
+        sonido.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue){
+                boolean valor;
+                try{
+                    valor = (boolean) newValue;
+                } catch(Exception e){
+                    Toast.makeText(getActivity(), "Error con el sonido", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if(valor){
+                    sonido.setSummary("El sonido está activado.");
+                    return true;
+                } else{
+                    return false;
+                }
+            }
+        });*/
     }
 }

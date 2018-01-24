@@ -89,7 +89,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarConfig(View view){
         Intent i = new Intent(this, PreferenciasActivity.class);
-        startActivity(i);
+        startActivityForResult(i, 0);
+    }
+
+    @Override
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        checkPref();
+    }
+
+    private boolean checkPref(){
+        SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return myPref.getBoolean("musica", false);
     }
 
     public void lanzarAcercaDe(View view){
@@ -159,14 +171,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        mp.start();
+        if(checkPref()) {
+            mp.start();
+        }
         Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        mp.start();
+        if(checkPref()) {
+            mp.start();
+        }
         Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 
@@ -188,7 +204,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        mp.start();
+        if(checkPref()) {
+            mp.start();
+        }
         Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
     }
 

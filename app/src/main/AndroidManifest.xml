@@ -28,9 +28,11 @@
         <activity android:name=".AlmacenPuntuacionesArray" />
         <activity android:name=".Puntuaciones" />
         <activity android:name=".MiAdaptador" />
-        <activity android:name=".Juego"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".VistaJuego"></activity>
+        <activity
+            android:name=".Juego"
+            android:screenOrientation="landscape" />
+        <activity android:name=".VistaJuego" />
+        <activity android:name=".AlmacenPuntuacionesPreferencias"></activity>
     </application>
 
 </manifest>

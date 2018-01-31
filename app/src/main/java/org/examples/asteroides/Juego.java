@@ -13,6 +13,7 @@ public class Juego extends Activity {
         setContentView(R.layout.activity_juego);
 
         vistaJuego = (VistaJuego) findViewById(R.id.VistaJuego);
+        vistaJuego.setPadre(this);
     }
 
     @Override

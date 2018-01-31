@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     MediaPlayer mp;
 
+    static final int ACTIV_JUEGO = 0;
+
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         mp = MediaPlayer.create(this, R.raw.audio);
         //mp.start();
+
+        almacen = new AlmacenPuntuacionesPreferencias(this);
 
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,17 +96,16 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, 0);
     }
 
-    @Override
-
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         checkPref();
-    }
+    }*/
 
-    private boolean checkPref(){
+    /*private boolean checkPref(){
         SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(this);
         return myPref.getBoolean("musica", false);
-    }
+    }*/
 
     public void lanzarAcercaDe(View view){
         Intent i = new Intent(this, AcercaDeActivity.class);
@@ -147,7 +150,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarJuego(View view){
         Intent i = new Intent(this, Juego.class);
-        startActivity(i);
+        startActivityForResult(i, ACTIV_JUEGO);
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACTIV_JUEGO && resultCode == RESULT_OK && data != null){
+            int puntuacion = data.getExtras().getInt("puntuacion");
+            String nombre = "Yo";
+            // Mejor leer nombre desde un AlertDialog.Builder o preferencias
+            almacen.guardarPuntuacion(puntuacion, nombre, System.currentTimeMillis());
+            lanzarPuntuaciones(null);
+        }
     }
 
     @Override
@@ -171,18 +186,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        if(checkPref()) {
-            mp.start();
-        }
+        /*if(checkPref()) {
+
+        }*/
+        mp.start();
         Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if(checkPref()) {
-            mp.start();
-        }
+        /*if(checkPref()) {
+
+        }*/
+        mp.start();
         Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 
@@ -204,9 +221,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        if(checkPref()) {
-            mp.start();
-        }
+        /*if(checkPref()) {
+
+        }*/
+        mp.start();
         Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
     }
 

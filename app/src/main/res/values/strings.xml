@@ -6,4 +6,7 @@
     <string name="Puntuaciones">Puntuaciones</string>
     <string name="tituloAplicacion">Asteroides</string>
     <string name="action_settings">Configuración</string>
+    <string name="title_activity_almacen_puntuaciones_preferencias">
+        AlmacenPuntuacionesPreferencias
+    </string>
 </resources>

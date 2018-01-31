@@ -56,7 +56,7 @@ public class VistaJuego extends View implements SensorEventListener {
     //private Grafico misil;
     private Vector<Grafico> misiles;
     private static int PASO_VELOCIDAD_MISIL = 12;
-    private boolean misilActivo = false;
+    //private boolean misilActivo = false;
     //private int tiempoMisil;
     private Vector<Integer> tiempoMisiles;
 
@@ -73,7 +73,6 @@ public class VistaJuego extends View implements SensorEventListener {
     //Cuándo se realozó el último proceso
     private long ultimoProceso = 0;
 
-    private static int retardo = 1;
 
     //MÚSICA
     SensorManager mSensorManager;
@@ -249,8 +248,8 @@ public class VistaJuego extends View implements SensorEventListener {
         //Actualizamos posición de misil
         for (int i = misiles.size()-1; i >= 0; i--){
             Grafico misil = misiles.get(i);
-            misil.incrementarPos(retardo);
-            tiempoMisiles.set(i, tiempoMisiles.get(i) - (int)retardo);
+            misil.incrementarPos(factorMov);
+            tiempoMisiles.set(i, tiempoMisiles.get(i) - (int)factorMov);
             if (tiempoMisiles.get(i) < 0){
                 misiles.remove(i);
                 tiempoMisiles.remove(i);
@@ -366,7 +365,7 @@ public class VistaJuego extends View implements SensorEventListener {
         }
         synchronized (asteroides){
             asteroides.remove(i);
-            misilActivo = false;
+            //misilActivo = false;
         }
         this.postInvalidate();
         soundPool.play(idExplosion, 1, 1, 0, 0, 1);

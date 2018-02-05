@@ -245,6 +245,7 @@ public class VistaJuego extends View implements SensorEventListener {
         for(Grafico asteroide : asteroides){
             asteroide.incrementarPos(factorMov);
         }
+
         //Actualizamos posición de misil
         for (int i = misiles.size()-1; i >= 0; i--){
             Grafico misil = misiles.get(i);

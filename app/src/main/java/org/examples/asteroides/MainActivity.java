@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mp = MediaPlayer.create(this, R.raw.audio);
         //mp.start();
 
-        almacen = new AlmacenPuntuacionesPreferencias(this);
+        //almacen = new AlmacenPuntuacionesPreferencias(this);
 
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override

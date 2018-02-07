@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.examples.asteroides">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,17 +24,11 @@
             android:name=".AcercaDeActivity"
             android:label="Acerca de ..."
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".PreferenciasFragment" />
         <activity android:name=".PreferenciasActivity" />
-        <activity android:name=".AlmacenPuntuaciones" />
-        <activity android:name=".AlmacenPuntuacionesArray" />
         <activity android:name=".Puntuaciones" />
-        <activity android:name=".MiAdaptador" />
         <activity
             android:name=".Juego"
             android:screenOrientation="landscape" />
-        <activity android:name=".VistaJuego" />
-        <activity android:name=".AlmacenPuntuacionesPreferencias"></activity>
     </application>
 
 </manifest>

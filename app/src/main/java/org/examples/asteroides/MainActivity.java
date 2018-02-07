@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final int ACTIV_JUEGO = 0;
 
-    public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
+    public static AlmacenPuntuaciones almacen;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         titulo = (TextView) findViewById(R.id.txtTitulo);
 
+        //AlmacenPuntuacionesPreferencias(this)
+        //AlmacenPuntuacionesFicheroInterno(this)
+        almacen = new AlmacenPuntuacionesArray(); //AlmacenPuntuacionesFicheroExterno(this)
+
         animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
         titulo.startAnimation(animacion);
         Animation animacionJugar = AnimationUtils.loadAnimation(this, R.anim.aparecer);
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         btnSalir.startAnimation(animacionPuntuaciones);
 
         mp = MediaPlayer.create(this, R.raw.audio);
-        //mp.start();
+        mp.start();
 
         //almacen = new AlmacenPuntuacionesPreferencias(this);
 

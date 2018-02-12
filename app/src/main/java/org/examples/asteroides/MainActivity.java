@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         //AlmacenPuntuacionesPreferencias(this)
         //AlmacenPuntuacionesFicheroInterno(this)
-        almacen = new AlmacenPuntuacionesArray(); //AlmacenPuntuacionesFicheroExterno(this)
+        //AlmacenPuntuacionesFicheroExterno(this)
+        almacen = new AlmacenPuntuacionesSQLite(this); //AlmacenPuntuacionesArray()
 
         animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
         titulo.startAnimation(animacion);
